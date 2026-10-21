@@ -11,6 +11,16 @@
 
 
 .layout-designer-unused{display:none}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}.row button,.row select{border:1px solid var(--ink);background:transparent;padding:9px 12px;cursor:pointer}.row button.on{background:var(--ink);color:var(--paper)}.row label{font:12px var(--mono);display:flex;align-items:center;gap:5px}.row input[type=range]{accent-color:#2454e8}.row output{font:12px var(--mono)}#hm{border:1px solid var(--line);background:#fff;border-radius:8px;touch-action:none}
+
+/* Compact thermal designer */
+#layout-designer{padding:18px 0!important}
+#layout-designer .panel{padding:14px;min-height:0}
+#layout-designer h2{font-size:11px;margin-bottom:8px}
+#layout-designer .row{gap:6px;margin:8px 0}
+#layout-designer .row button,#layout-designer .row select{padding:6px 9px;font-size:11px}
+#layout-designer #hm{max-height:360px;width:100%;height:auto;object-fit:contain}
+#layout-designer .data-note{font-size:10px;margin-top:8px}
+@media(max-width:760px){#layout-designer{padding:12px 0!important}#layout-designer .panel{padding:10px}#layout-designer #hm{max-height:260px}}
 </style>
 </head>
 <body>
