@@ -106,7 +106,29 @@ let placePage=0;
 function renderStation(){const s=stations.find(x=>x.name===select.value);if(!s){list.innerHTML='<div class="place-skeleton" aria-hidden="true"><div class="skeleton-row"><i></i><span></span></div><div class="skeleton-row"><i></i><span></span></div><div class="skeleton-row"><i></i><span></span></div><div class="skeleton-row"><i></i><span></span></div><div class="skeleton-row"><i></i><span></span></div></div>';document.getElementById('count').textContent='HYDERABAD METRO NEARBY-PLACES DIRECTORY';document.getElementById('place-pagination').innerHTML='';return;}const places=nearbyPlaces[s.name]||[];const pages=Math.max(1,Math.ceil(places.length/5));placePage=Math.min(placePage,pages-1);const visible=places.slice(placePage*5,placePage*5+5);list.innerHTML=visible.map(([name,distance,type])=>'<article class="shelter"><div><h3>'+name+'</h3><p>Approx. '+distance+' from station · '+type+'</p></div><span class="tag">'+(type.toLowerCase().includes('park')||type.toLowerCase().includes('garden')||type.toLowerCase().includes('lake')?'Outdoor place':'Nearby place')+'</span></article>').join('')+'<p class="shelter-list-note">Nearby places from the submitted Hyderabad Metro directory. Distances are approximate and may involve a short walk or auto ride. Listings are not verified cooling centres; check location, access, opening hours, and conditions before travelling.</p>';document.getElementById('count').textContent='PLACES '+(places.length?placePage*5+1:0)+'–'+Math.min((placePage+1)*5,places.length)+' OF '+places.length+' / '+s.name.toUpperCase();document.getElementById('place-pagination').innerHTML='<button class="btn" id="place-prev" '+(placePage===0?'disabled':'')+'>← Previous</button><span class="shelter-list-note">Page '+(placePage+1)+' / '+pages+'</span><button class="btn" id="place-next" '+(placePage>=pages-1?'disabled':'')+'>Next →</button>';document.getElementById('place-prev').addEventListener('click',()=>{if(placePage>0){placePage--;renderStation();}});document.getElementById('place-next').addEventListener('click',()=>{if(placePage<pages-1){placePage++;renderStation();}});}
 document.getElementById('clear').addEventListener('click',()=>{select.value='';renderStation();});select.addEventListener('change',renderStation);renderStation();
 const hours=document.getElementById('hours'),shade=document.getElementById('shade');
-function calc(){const h=Number(hours.value),s=Number(shade.value);document.getElementById('hours-value').textContent=h+' h';document.getElementById('shade-value').textContent=['Limited','Some','Good'][s];let title,copy;if(h===0){title='Stay prepared';copy='No peak-heat outdoor time selected. Keep alerts on and check in on others.'}else if(h>=4&&s===0){title='Reduce exposure';copy='Try to shorten outdoor time and identify a cool indoor stop before heading out.'}else if(h>=3){title='Plan breaks';copy='Build in regular cooling breaks, water, and a shaded route.'}else{title='Keep it mindful';copy='Carry water and take a break if you feel unwell or overheated.'}document.getElementById('plan-result').textContent=title;document.getElementById('plan-copy').textContent=copy;}
+function calc(){
+ const h=Number(hours.value),s=Number(shade.value);
+ document.getElementById('hours-value').textContent=h+' h';
+ document.getElementById('shade-value').textContent=['Limited','Some','Good'][s];
+ const scenarios=[
+  {maxHours:0,shade:0,title:'Stay prepared',copy:'No peak-heat outdoor time selected. Keep alerts on and check in on others.'},
+  {maxHours:0,shade:1,title:'Stay prepared',copy:'No peak-heat outdoor time selected. Keep alerts on and check in on others.'},
+  {maxHours:0,shade:2,title:'Stay prepared',copy:'No peak-heat outdoor time selected. Keep alerts on and check in on others.'},
+  {maxHours:2,shade:0,title:'Keep it mindful',copy:'Carry water, seek shade when possible, and take a break if you feel unwell or overheated.'},
+  {maxHours:2,shade:1,title:'Keep it mindful',copy:'Carry water and take a break if you feel unwell or overheated.'},
+  {maxHours:2,shade:2,title:'Keep it mindful',copy:'Keep water nearby and use your cool space for breaks when needed.'},
+  {maxHours:4,shade:0,title:'Reduce exposure',copy:'Try to shorten outdoor time and identify a cool indoor stop before heading out.'},
+  {maxHours:4,shade:1,title:'Plan breaks',copy:'Build in regular cooling breaks, water, and a shaded route.'},
+  {maxHours:4,shade:2,title:'Plan breaks',copy:'Plan regular breaks in your cool space and keep water accessible.'},
+  {maxHours:8,shade:0,title:'Reduce exposure',copy:'Consider changing the timing or duration of outdoor activity. Find a cool indoor place and arrange regular check-ins.'},
+  {maxHours:8,shade:1,title:'Reduce exposure',copy:'Try to reduce peak-heat time. Plan frequent breaks in shade or a cool indoor space, and keep water close.'},
+  {maxHours:8,shade:2,title:'Plan breaks',copy:'Even with access to a cool space, plan frequent cooling breaks and avoid pushing through heat discomfort.'}
+ ];
+ const bucket=h===0?0:h<=2?2:h<=4?4:8;
+ const match=scenarios.find(x=>x.maxHours===bucket&&x.shade===s);
+ document.getElementById('plan-result').textContent=match.title;
+ document.getElementById('plan-copy').textContent=match.copy;
+}
 hours.addEventListener('input',calc);shade.addEventListener('input',calc);calc();
 </script>
 </body></html>
